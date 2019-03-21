@@ -82,7 +82,11 @@ define snmp::snmpv3_user (
   exec { "create-snmpv3-user-${title}":
       path    => '/bin:/sbin:/usr/bin:/usr/sbin',
       # TODO: Add "rwuser ${title}" (or rouser) to /etc/snmp/${daemon}.conf
-      command => "service ${service_name} stop ; sleep 5 ; echo \"${cmd}\" >>${snmp::var_net_snmp}/${daemon}.conf && touch ${snmp::var_net_snmp}/${title}-${daemon}",
+      # The 'service' command is not available on every platform
+      command => $facts['serviceprovider'] ? {
+        default   => "service ${service_name} stop ; sleep 5 ; echo \"${cmd}\" >>${snmp::var_net_snmp}/${daemon}.conf && touch ${snmp::var_net_snmp}/${title}-${daemon}",
+        'systemd' => "systemctl stop ${service_name}; sleep 5 ; echo \"${cmd}\" >>${snmp::var_net_snmp}/${daemon}.conf && touch ${snmp::var_net_snmp}/${title}-${daemon}",
+      },
       creates => "${snmp::var_net_snmp}/${title}-${daemon}",
       user    => 'root',
       require => [ Package[$snmp::packages], File[$snmp::var_net_snmp], ],
