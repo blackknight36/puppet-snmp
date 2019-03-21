@@ -368,36 +368,39 @@ class snmp (
     }
 
     file { $service_config:
-        ensure  => $file_ensure,
-        mode    => $service_config_perms,
-        owner   => 'root',
-        group   => $service_config_dir_group,
-        content => template('snmp/snmpd.conf.erb'),
-        require => Package[$packages],
-        notify  => Service[$services],
+        ensure    => $file_ensure,
+        mode      => $service_config_perms,
+        owner     => 'root',
+        group     => $service_config_dir_group,
+        content   => template('snmp/snmpd.conf.erb'),
+        require   => Package[$packages],
+        notify    => Service[$services],
+        show_diff => false,
     }
 
     if $::osfamily != 'FreeBSD' {
         file { 'snmpd.sysconfig':
-          ensure  => $file_ensure,
-          mode    => '0644',
-          owner   => 'root',
-          group   => 'root',
-          path    => $sysconfig_path,
-          content => template("snmp/snmpd.sysconfig-${::operatingsystem}.erb"),
-          require => Package[$packages],
-          notify  => Service[$services],
+          ensure    => $file_ensure,
+          mode      => '0644',
+          owner     => 'root',
+          group     => 'root',
+          path      => $sysconfig_path,
+          content   => template("snmp/snmpd.sysconfig-${::operatingsystem}.erb"),
+          require   => Package[$packages],
+          notify    => Service[$services],
+          show_diff => false,
         }
     }
 
     file { $trap_service_config:
-        ensure  => $file_ensure,
-        mode    => $service_config_perms,
-        owner   => 'root',
-        group   => $service_config_dir_group,
-        content => template('snmp/snmptrapd.conf.erb'),
-        require => Package[$packages],
-        notify  => $snmptrapd_conf_notify,
+        ensure    => $file_ensure,
+        mode      => $service_config_perms,
+        owner     => 'root',
+        group     => $service_config_dir_group,
+        content   => template('snmp/snmptrapd.conf.erb'),
+        require   => Package[$packages],
+        notify    => $snmptrapd_conf_notify,
+        show_diff => false,
     }
 
     service { 'snmptrapd':
@@ -412,13 +415,14 @@ class snmp (
     case $::operatingsystem {
         'CentOS', 'Fedora': {
             file { '/etc/sysconfig/snmptrapd':
-                ensure  => $file_ensure,
-                mode    => '0644',
-                owner   => 'root',
-                group   => 'root',
-                content => template("snmp/snmptrapd.sysconfig-${::osfamily}.erb"),
-                require => Package[$packages],
-                notify  => Service['snmptrapd'],
+                ensure    => $file_ensure,
+                mode      => '0644',
+                owner     => 'root',
+                group     => 'root',
+                content   => template("snmp/snmptrapd.sysconfig-${::osfamily}.erb"),
+                require   => Package[$packages],
+                notify    => Service['snmptrapd'],
+                show_diff => false,
             }
         }
 

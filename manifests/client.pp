@@ -93,12 +93,13 @@ class snmp::client (
   }
 
   file { 'snmp.conf':
-    ensure  => $file_ensure,
-    mode    => '0644',
-    owner   => 'root',
-    group   => 'root',
-    path    => $conf_file,
-    content => template('snmp/snmp.conf.erb'),
-    require => $req,
+    ensure    => $file_ensure,
+    mode      => '0644',
+    owner     => 'root',
+    group     => 'root',
+    path      => $conf_file,
+    content   => template('snmp/snmp.conf.erb'),
+    require   => $req,
+    show_diff => false,
   }
 }
