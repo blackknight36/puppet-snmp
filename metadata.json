@@ -1,6 +1,6 @@
 {
   "name": "blackknight36-snmp",
-  "version": "3.9.3",
+  "version": "3.9.4",
   "author": "blackknight36",
   "summary": "Simple Network Management Protocol is for monitoring network and computer equipment. Net-SNMP implements v1, v2c, and v3 on both IPv4 and IPv6.",
   "license": "Apache-2.0",
