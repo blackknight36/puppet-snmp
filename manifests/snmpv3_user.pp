@@ -57,8 +57,8 @@ define snmp::snmpv3_user (
   Variant[String, Enum['SHA', 'MD5']] $authtype = 'SHA',
   Variant[String, Enum['AES', 'DES']] $privtype = 'AES',
   Variant[String, Enum['snmpd', 'snmptrapd']] $daemon = 'snmpd',
-  String $authpass = undef,
-  String $privpass = undef,
+  Optional[String] $authpass = undef,
+  Optional[String] $privpass = undef,
   ) {
 
   include ::snmp
