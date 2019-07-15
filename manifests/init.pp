@@ -385,7 +385,7 @@ class snmp (
           owner     => 'root',
           group     => 'root',
           path      => $sysconfig_path,
-          content   => template("snmp/snmpd.sysconfig-${::operatingsystem}.erb"),
+          content   => template("snmp/snmpd.sysconfig-${::osfamily}.erb"),
           require   => Package[$packages],
           notify    => Service[$services],
           show_diff => false,
