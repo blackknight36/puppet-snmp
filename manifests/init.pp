@@ -265,7 +265,7 @@ class snmp (
     Array[String] $trap_forwards = [],
     Array[String] $snmptrapd_config = [],
     Boolean $manage_client = false,
-    Variant[String, Enum['running', 'stopped']] $ensure = 'running',
+    Variant[String, Enum['present', 'absent']] $ensure = 'present',
     Boolean $autoupgrade = true,
     String $snmpd_options = '-LS0-6d',
     String $service_config = '/etc/snmp/snmpd.conf',
@@ -315,10 +315,6 @@ class snmp (
       /(absent)/: {
         $package_ensure = 'absent'
         $file_ensure = 'absent'
-        $service_ensure = 'stopped'
-        $service_enable = false
-        $trap_service_ensure = 'stopped'
-        $trap_service_enable = false
       }
 
       default: {

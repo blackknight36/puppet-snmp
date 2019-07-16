@@ -1,16 +1,21 @@
 #!/usr/bin/env rspec
 
+#require 'hiera'
 require 'spec_helper'
 
 describe 'snmp::client', :type => 'class' do
+  #let(:hiera_config) { 'spec/fixtures/hiera/hiera.yaml' }
+  #hiera = Hiera.new(:config => 'spec/fixtures/hiera/hiera.yaml')
 
   context 'on a non-supported osfamily' do
     let(:params) {{}}
+
     let :facts do {
       :osfamily        => 'foo',
       :operatingsystem => 'bar'
     }
     end
+
     it 'should fail' do
       expect {
         should raise_error(Puppet::Error, /Module snmp is not supported on bar/)
@@ -18,138 +23,87 @@ describe 'snmp::client', :type => 'class' do
     end
   end
 
-  redhatish = ['RedHat']
-  #redhatish = ['RedHat', 'Fedora']
-  debianish = ['Debian']
-  #debianish = ['Debian', 'Ubuntu']
-  suseish = ['Suse']
+  on_supported_os.each do |os, facts|
+    context "on #{os}" do
+
+      let(:facts) do
+        facts
+      end
+
+      let(:params) {{
+        :ensure => 'installed',
+      }}
+
+      #packages = hiera.lookup('snmp::client::packages', ['snmp-client'], nil)
+
+      #packages.each do |p|
+      #  it do
+      #    is_expected.to contain_package(p)
+      #      .with({
+      #        :ensure => 'installed',
+      #      })
+      #  end
+      #end
+
+      it { should contain_file('snmp.conf').with(
+          :ensure  => 'file',
+          :mode    => '0644',
+          :owner   => 'root',
+          :group   => 'root',
+          :path    => '/etc/snmp/snmp.conf',
+          #:require => ['Package[snmp-client]', 'File[/etc/snmp]']
+      )}
+    end
+  end
+
   freebsdish = ['FreeBSD']
   openbsdish = ['OpenBSD']
 
-  context 'on a supported osfamily, default parameters' do
-    redhatish.each do |os|
-      describe "for osfamily RedHat, operatingsystem #{os}" do
-        let(:params) {{}}
-        let :facts do {
-          :osfamily               => 'RedHat',
-          :operatingsystem        => os,
-          :operatingsystemrelease => '6.4',
-          :lsbmajdistrelease      => '6',
-          :operatingsystemmajrelease => '6'
-        }
-        end
-        it { should contain_package('snmp-client').with(
-          :ensure => 'present',
-          :name   => 'net-snmp-utils'
-        )}
-        it { should contain_file('snmp.conf').with(
-          :ensure  => 'present',
-          :mode    => '0644',
-          :owner   => 'root',
-          :group   => 'root',
-          :path    => '/etc/snmp/snmp.conf',
-          :require => ['Package[snmp-client]', 'File[/etc/snmp]']
-        )}
+  freebsdish.each do |os|
+    describe "for osfamily FreeBSD, operatingsystem #{os}" do
+      let(:params) {{}}
+      let :facts do {
+        :osfamily               => 'FreeBSD',
+        :operatingsystem        => os,
+        :operatingsystemrelease => '9.2',
+        :operatingsystemmajrelease => '9'
+      }
       end
+      it { should contain_package('snmp-client').with(
+        :ensure => 'installed',
+      )}
+      it { should_not contain_file('snmp.conf').with(
+        :ensure  => 'installed',
+        :mode    => '0755',
+        :owner   => 'root',
+        :group   => 'wheel',
+        :path    => '/usr/local/etc/snmp/snmp.conf',
+        :require => nil
+      )}
     end
+  end
 
-    debianish.each do |os|
-      describe "for osfamily Debian, operatingsystem #{os}" do
-        let(:params) {{}}
-        let :facts do {
-          :osfamily        => 'Debian',
-          :operatingsystem => os,
-          :operatingsystemrelease => '6.0.7',
-          :lsbmajdistrelease      => '6',
-          :operatingsystemmajrelease => '6'
-        }
-        end
-        it { should contain_package('snmp-client').with(
-          :ensure => 'present',
-          :name   => 'snmp'
-        )}
-        it { should contain_file('snmp.conf').with(
-          :ensure  => 'present',
-          :mode    => '0644',
-          :owner   => 'root',
-          :group   => 'root',
-          :path    => '/etc/snmp/snmp.conf',
-          :require => 'Package[snmp-client]'
-        )}
+  openbsdish.each do |os|
+    describe "for osfamily OpenBSD, operatingsystem #{os}" do
+      let(:params) {{}}
+      let :facts do {
+        :osfamily               => 'OpenBSD',
+        :operatingsystem        => os,
+        :operatingsystemrelease => '5.9',
+        :operatingsystemmajrelease => '5'
+      }
       end
-    end
-
-    suseish.each do |os|
-      describe "for osfamily Suse, operatingsystem #{os}" do
-        let(:params) {{}}
-        let :facts do {
-          :osfamily               => 'Suse',
-          :operatingsystem        => os,
-          :operatingsystemrelease => '11.1',
-          :lsbmajdistrelease      => '11',
-          :operatingsystemmajrelease => '11'
-        }
-        end
-        it { should_not contain_package('snmp-client') }
-        it { should contain_file('snmp.conf').with(
-          :ensure  => 'present',
-          :mode    => '0644',
-          :owner   => 'root',
-          :group   => 'root',
-          :path    => '/etc/snmp/snmp.conf',
-          :require => nil
-        )}
-      end
-    end
-
-    freebsdish.each do |os|
-      describe "for osfamily FreeBSD, operatingsystem #{os}" do
-        let(:params) {{}}
-        let :facts do {
-          :osfamily               => 'FreeBSD',
-          :operatingsystem        => os,
-          :operatingsystemrelease => '9.2',
-          :operatingsystemmajrelease => '9'
-        }
-        end
-        it { should contain_package('snmp-client').with(
-          :ensure => 'present',
-          :name   => 'net-mgmt/net-snmp'
-        )}
-        it { should_not contain_file('snmp.conf').with(
-          :ensure  => 'present',
-          :mode    => '0755',
-          :owner   => 'root',
-          :group   => 'wheel',
-          :path    => '/usr/local/etc/snmp/snmp.conf',
-          :require => nil
-        )}
-      end
-    end
-
-    openbsdish.each do |os|
-      describe "for osfamily OpenBSD, operatingsystem #{os}" do
-        let(:params) {{}}
-        let :facts do {
-          :osfamily               => 'OpenBSD',
-          :operatingsystem        => os,
-          :operatingsystemrelease => '5.9',
-          :operatingsystemmajrelease => '5'
-        }
-        end
-        it { should contain_package('snmp-client').with(
-          :ensure => 'present',
-          :name   => 'net-snmp'
-        )}
-        it { should_not contain_file('snmp.conf').with(
-          :ensure  => 'present',
-          :mode    => '0755',
-          :owner   => 'root',
-          :group   => 'wheel',
-          :path    => '/etc/snmp/snmp.conf',
-          :require => nil
-        )}
-      end
+      it { should contain_package('snmp-client').with(
+        :ensure => 'installed',
+      )}
+      it { should_not contain_file('snmp.conf').with(
+        :ensure  => 'installed',
+        :mode    => '0755',
+        :owner   => 'root',
+        :group   => 'wheel',
+        :path    => '/etc/snmp/snmp.conf',
+        :require => nil
+      )}
     end
   end
 
@@ -169,29 +123,18 @@ describe 'snmp::client', :type => 'class' do
       it { should contain_file('snmp.conf').with_ensure('absent') }
     end
 
-    describe 'ensure => badvalue' do
-      let(:params) {{ :ensure => 'badvalue' }}
-      it 'should fail' do
-        expect {
-          should raise_error(Puppet::Error, /ensure parameter must be present or absent/)
-        }
-      end
-    end
-
     describe 'autoupgrade => true' do
       let(:params) {{ :autoupgrade => true }}
       it { should contain_package('snmp-client').with_ensure('latest') }
-      it { should contain_file('snmp.conf').with_ensure('present') }
+      it { should contain_file('snmp.conf').with_ensure('file') }
     end
 
-    describe 'autoupgrade => badvalue' do
-      let(:params) {{ :autoupgrade => 'badvalue' }}
-      it 'should fail' do
-        expect {
-          should raise_error(Puppet::Error, /"badvalue" is not a boolean./)
-        }
-      end
+    describe 'autoupgrade => false' do
+      let(:params) {{ :autoupgrade => false }}
+      it { should contain_package('snmp-client').with_ensure('installed') }
+      it { should contain_file('snmp.conf').with_ensure('file') }
     end
+
 
     describe 'snmp_config => [ "defVersion 2c", "defCommunity public" ]' do
       let(:params) {{ :snmp_config => [ 'defVersion 2c', 'defCommunity public' ] }}

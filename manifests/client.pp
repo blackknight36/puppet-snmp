@@ -14,8 +14,8 @@
 #   Default: []
 #
 # [*ensure*]
-#   Ensure if present or absent.
-#   Default: present
+#   Ensure if installed or absent.
+#   Default: installed
 #
 # [*autoupgrade*]
 #   Upgrade package automatically, if there is a newer version.
@@ -50,13 +50,13 @@
 class snmp::client (
     String $conf_file = '/etc/snmp.conf',
     Array[String] $snmp_config = [],
-    Variant[String, Enum['present', 'installed', 'absent']] $ensure = 'installed',
+    Variant[String, Enum['installed', 'present', 'absent']] $ensure = 'installed',
     Boolean $autoupgrade = false,
-    Array[String] $packages = [],
+    Array[String] $packages = ['snmp-client'],
     ) {
 
     case $ensure {
-        /(present|installed)/: {
+        /(installed|present)/: {
           if $autoupgrade == true {
               $package_ensure = 'latest'
           }
@@ -64,7 +64,7 @@ class snmp::client (
               $package_ensure = $ensure
           }
 
-          $file_ensure = 'present'
+          $file_ensure = 'file'
         }
 
         /(absent)/: {
@@ -73,7 +73,7 @@ class snmp::client (
         }
 
         default: {
-            fail('ensure parameter must be present or absent')
+            fail('ensure parameter must be installed or absent')
         }
     }
 
@@ -81,26 +81,26 @@ class snmp::client (
         ensure => $package_ensure,
     }
 
-  if $::osfamily == 'RedHat' {
-    file { '/etc/snmp':
-      ensure => directory,
+    if $::osfamily == 'RedHat' {
+      file { '/etc/snmp':
+        ensure => directory,
+        before => File['snmp.conf'],
+      }
     }
-  }
 
-  $req = $::osfamily ? {
-    'RedHat' => [Package['snmp-client'], File['/etc/snmp']],
-    'Suse'   => undef,
-    default  => Package['snmp-client'],
-  }
+    $req = $::osfamily ? {
+      'Suse'   => undef,
+      default  => Package[$packages],
+    }
 
-  file { 'snmp.conf':
-    ensure    => $file_ensure,
-    mode      => '0644',
-    owner     => 'root',
-    group     => 'root',
-    path      => $conf_file,
-    content   => template('snmp/snmp.conf.erb'),
-    require   => $req,
-    show_diff => false,
-  }
+    file { 'snmp.conf':
+      ensure    => $file_ensure,
+      mode      => '0644',
+      owner     => 'root',
+      group     => 'root',
+      path      => $conf_file,
+      content   => template('snmp/snmp.conf.erb'),
+      require   => $req,
+      show_diff => false,
+    }
 }
