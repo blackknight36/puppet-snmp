@@ -30,8 +30,6 @@ RSpec.configure do |c|
     c.formatter = 'documentation'
     c.mock_with :rspec
     c.hiera_config = 'spec/fixtures/hiera/hiera.yaml'
-    #c.manifest_dir = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests')
-    #c.manifest = File.join(File.dirname(File.expand_path(__FILE__)), 'fixtures', 'manifests', 'site.pp')
     c.after(:suite) do
         RSpec::Puppet::Coverage.report!(95)
     end

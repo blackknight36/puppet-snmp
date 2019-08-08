@@ -266,7 +266,7 @@ class snmp (
     Array[String] $snmptrapd_config = [],
     Boolean $manage_client = false,
     Variant[String, Enum['present', 'absent']] $ensure = 'present',
-    Boolean $autoupgrade = true,
+    Boolean $autoupgrade = false,
     String $snmpd_options = '-LS0-6d',
     String $service_config = '/etc/snmp/snmpd.conf',
     String $service_config_perms = '0600',
@@ -363,8 +363,9 @@ class snmp (
         require => Package[$packages],
     }
 
-    file { $service_config:
+    file { 'snmpd.conf':
         ensure    => $file_ensure,
+        path      => $service_config,
         mode      => $service_config_perms,
         owner     => 'root',
         group     => $service_config_dir_group,
@@ -388,8 +389,9 @@ class snmp (
         }
     }
 
-    file { $trap_service_config:
+    file { 'snmptrapd.conf':
         ensure    => $file_ensure,
+        path      => $trap_service_config,
         mode      => $service_config_perms,
         owner     => 'root',
         group     => $service_config_dir_group,
@@ -410,8 +412,9 @@ class snmp (
 
     case $::operatingsystem {
         'CentOS', 'Fedora': {
-            file { '/etc/sysconfig/snmptrapd':
+            file { 'snmptrapd.sysconfig':
                 ensure    => $file_ensure,
+                path      => '/etc/sysconfig/snmptrapd',
                 mode      => '0644',
                 owner     => 'root',
                 group     => 'root',
