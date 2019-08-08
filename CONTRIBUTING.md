@@ -28,7 +28,7 @@ normal
 Testing
 -------
 
-Tests are written with [rspec-puppet](http://rspec-puppet.com/). CI is covered by [Travis CI](http://about.travis-ci.org/) and the current status is visible [here](http://travis-ci.org/razorsedge/puppet-snmp).
+Tests are written with [rspec-puppet](http://rspec-puppet.com/). CI is covered by [Travis CI](http://about.travis-ci.org/) and the current status is visible [here](http://travis-ci.org/blackknight36/puppet-snmp).
 
 To install the test system, pick one of the following:
 

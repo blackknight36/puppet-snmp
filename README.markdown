@@ -1,6 +1,6 @@
 # Net-SNMP
 
-[![Build Status](https://secure.travis-ci.org/razorsedge/puppet-snmp.png?branch=master)](http://travis-ci.org/razorsedge/puppet-snmp)
+[![Build Status](https://secure.travis-ci.org/blackknight36/puppet-snmp.png?branch=master)](http://travis-ci.org/blackknight36/puppet-snmp)
 
 #### Table of Contents
 
@@ -557,9 +557,10 @@ Net-SNMP module support is available with these operating systems:
 Please see [CONTRIBUTING.md](CONTRIBUTING.md) for information on how to contribute.
 
 Copyright (C) 2012 Mike Arnold <mike@razorsedge.org>
+Copyright (C) 2019 Michael Watters <wattersm@watters.ws>
 
 Licensed under the Apache License, Version 2.0.
 
-[razorsedge/puppet-snmp on GitHub](https://github.com/razorsedge/puppet-snmp)
+[blackknight36/puppet-snmp on GitHub](https://github.com/blackknight36/puppet-snmp)
 
-[razorsedge/snmp on Puppet Forge](https://forge.puppetlabs.com/razorsedge/snmp)
+[blackknight36/snmp on Puppet Forge](https://forge.puppetlabs.com/blackknight36/snmp)

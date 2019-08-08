@@ -41,6 +41,7 @@
 # === Authors:
 #
 # Mike Arnold <mike@razorsedge.org>
+# Michael Watters <wattersm@watters.ws>
 #
 # === Copyright:
 #
