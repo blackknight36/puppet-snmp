@@ -10,8 +10,6 @@ snmp::ro_network: '127.0.0.1'
 snmp::ro_network6: '::1'
 snmp::rw_network: '127.0.0.1'
 snmp::rw_network6: '::1'
-snmp::contact: 'Unknown'
-snmp::location: 'Unknown'
 snmp::com2sec: ['notConfigUser  default       public']
 snmp::com2sec6: ['notConfigUser  default       public']
 snmp::groups: ['notConfigGroup v1            notConfigUser', 'notConfigGroup v2c           notConfigUser']

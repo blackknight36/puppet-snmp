@@ -285,7 +285,7 @@ class snmp (
     Boolean $openmanage_enable = false,
     String $var_net_snmp = '/var/lib/net-snmp',
     String $sysconfig_path = '/etc/sysconfig/snmpd',
-    String $sysname = $::fqdn,
+    String $sysname = $facts['fqdn'],
     Array[String] $packages = ['net-snmp'],
     Array[String] $services = ['snmpd'],
     Optional[String] $ro_community = undef,
@@ -296,8 +296,8 @@ class snmp (
     Optional[String] $ro_network6 = undef,
     Optional[String] $rw_network = undef,
     Optional[String] $rw_network6 = undef,
-    Optional[String] $contact = undef,
-    Optional[String] $location = undef,
+    Optional[String] $contact = 'root@localhost',
+    Optional[String] $location = 'Unknown',
     ) {
 
     case $ensure {
