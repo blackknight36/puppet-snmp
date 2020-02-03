@@ -362,9 +362,18 @@ class snmp (
         ensure  => 'directory',
         mode    => '0755',
         owner   => 'root',
-        group   => 'root',
+        group   => $service_config_dir_group,
         path    => $var_net_snmp,
         require => Package[$packages],
+    }
+
+    if $::osfamily == 'FreeBSD' {
+        file { '/usr/local/etc/snmp':
+            ensure => directory,
+            owner  => 'root',
+            group  => $service_config_dir_group,
+            before => File[$service_config],
+        }
     }
 
     file { $service_config:
