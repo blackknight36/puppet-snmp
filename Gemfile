@@ -1,26 +1,33 @@
-source ENV['GEM_SOURCE'] || "https://rubygems.org"
+# This file is part of the blackknight36-snmp puppet module.
+# Copyright 2020 Michael Watters <wattersm@watters.ws>
+# SPDX-License-Identifier: GPL-3.0-or-later
 
-group :development, :unit_tests do
-  gem 'rake', '10.5.0',                    :require => false
-  gem 'rspec', '~> 2.0',                   :require => false
-  gem 'rspec-puppet', '>= 2.1.0',          :require => false
-  gem 'puppetlabs_spec_helper', '~> 1.2',  :require => false
-  gem 'puppet-lint', '~> 2.0',             :require => false
-  gem 'json', '~> 1.8',                    :require => false if RUBY_VERSION =~ /^1\./
-  gem 'json',                              :require => false if RUBY_VERSION =~ /^2\./
-  gem 'json_pure', '~> 1.8',               :require => false if RUBY_VERSION =~ /^1\.8/
-  gem 'json_pure', '<= 2.0.1',             :require => false if RUBY_VERSION =~ /^1\.9/
-  gem 'json_pure',                         :require => false if RUBY_VERSION =~ /^2\./
-  gem 'metadata-json-lint', '< 1.2.0',     :require => false if RUBY_VERSION =~ /^1\./
-  gem 'metadata-json-lint',                :require => false if RUBY_VERSION =~ /^2\./
-  gem 'semantic_puppet', '0.1.3',          :require => false if RUBY_VERSION =~ /^1\./
-  gem 'semantic_puppet',                   :require => false if RUBY_VERSION =~ /^2\./
-  gem 'puppet-lint-unquoted_string-check', :require => false
-  gem 'puppet-lint-empty_string-check',    :require => false
-  gem 'puppet-lint-leading_zero-check',    :require => false
-end
+source 'https://rubygems.org'
 
-gem 'puppet', ENV['PUPPET_GEM_VERSION'], :require => false
-gem 'facter', ENV['FACTER_GEM_VERSION'], :require => false
+puppetversion = ENV.key?('PUPPET_VERSION') ? "= #{ENV['PUPPET_VERSION']}" : ['= 5.0.0']
 
-# vim:ft=ruby
+gem "rake", "~> 12.0"
+
+gem 'puppet', puppetversion
+gem "puppetlabs_spec_helper", "~> 2.2"
+
+gem 'rspec', '>= 3.4.4'
+gem 'rspec-puppet', '>= 2.1.0'
+gem 'rspec-puppet-facts', '>= 1.8.0'
+gem 'rspec-puppet-utils', '>= 3.4.0'
+
+gem "beaker", "~> 3.17"
+gem "beaker-rspec", "~> 6.1"
+gem "beaker-puppet_install_helper", "~> 0.7.1"
+
+gem "serverspec", "~> 2.39"
+
+gem "puppet-syntax", "~> 2.4"
+gem "puppet-lint", "~> 2.2"
+gem "metadata-json-lint", "~> 2.0.1"
+gem "yaml-lint", "~> 0.0.9"
+
+gem "puppet-strings", "~> 1.1.0"
+
+# Coveralls.io coverage report
+gem 'coveralls', require: false
